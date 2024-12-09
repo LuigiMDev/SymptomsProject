@@ -100,7 +100,7 @@ namespace SymptomsProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                        throw;
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
