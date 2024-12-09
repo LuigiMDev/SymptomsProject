@@ -108,9 +108,9 @@ namespace SymptomsProject.Controllers
         }
 
         // POST: Patients/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _service.Delete(id);
             return RedirectToAction(nameof(Index));
