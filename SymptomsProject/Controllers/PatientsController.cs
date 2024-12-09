@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SymptomsProject.Data;
 using SymptomsProject.Models;
+using SymptomsProject.Services;
 
 namespace SymptomsProject.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly SymptomsContext _context;
+        private readonly PatientService _service;
 
-        public PatientsController(SymptomsContext context)
+        public PatientsController(PatientService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: Patients
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Patients.ToListAsync());
+            return View(await _service.FindAllAsync());
         }
 
         // GET: Patients/Details/5
@@ -33,8 +34,7 @@ namespace SymptomsProject.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patients
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var patient = await _service.FindByIdAsync(id.Value);
             if (patient == null)
             {
                 return NotFound();
@@ -54,15 +54,14 @@ namespace SymptomsProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber,Email,CreationDate,EditDate")] Patient patient)
+        public async Task<IActionResult> Create(Patient patient)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(patient);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(patient);
             }
-            return View(patient);
+            await _service.Create(patient);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Patients/Edit/5
@@ -73,7 +72,7 @@ namespace SymptomsProject.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patients.FindAsync(id);
+            var patient = await _service.FindByIdAsync(id.Value);
             if (patient == null)
             {
                 return NotFound();
@@ -86,7 +85,7 @@ namespace SymptomsProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,PhoneNumber,Email,CreationDate,EditDate")] Patient patient)
+        public async Task<IActionResult> Edit(int id, Patient patient)
         {
             if (id != patient.Id)
             {
@@ -97,40 +96,14 @@ namespace SymptomsProject.Controllers
             {
                 try
                 {
-                    _context.Update(patient);
-                    await _context.SaveChangesAsync();
+                    await _service.Edit(patient);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PatientExists(patient.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(patient);
-        }
-
-        // GET: Patients/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var patient = await _context.Patients
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
             return View(patient);
         }
 
@@ -139,19 +112,8 @@ namespace SymptomsProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-            if (patient != null)
-            {
-                _context.Patients.Remove(patient);
-            }
-
-            await _context.SaveChangesAsync();
+            await _service.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PatientExists(int id)
-        {
-            return _context.Patients.Any(e => e.Id == id);
         }
     }
 }
