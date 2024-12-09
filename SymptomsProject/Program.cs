@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SymptomsProject.Data;
+using SymptomsProject.Services;
 
 namespace SymptomsProject
 {
@@ -27,6 +28,8 @@ namespace SymptomsProject
                     );
             }
             );
+
+            builder.Services.AddScoped<PatientService>();
 
 
             var app = builder.Build();
