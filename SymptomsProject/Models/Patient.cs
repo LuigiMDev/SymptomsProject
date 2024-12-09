@@ -8,7 +8,7 @@ namespace SymptomsProject.Models
         [Display(Name = "Nome")]
         public string Name { get; set; }
         [Display(Name = "Número de telefone")]
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         [Display(Name = "E-mail")]
         public string Email { get; set; }
         [Display(Name = "Data de Criação")]
