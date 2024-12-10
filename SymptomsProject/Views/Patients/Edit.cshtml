@@ -1,52 +1,53 @@
 ﻿@model SymptomsProject.Models.Patient
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Paciente";
 }
 
-<h1>Edit</h1>
+<h1 class="text-center my-4">@ViewData["Title"]</h1>
+<p class="text-center lead">Atualize as informações do paciente no formulário abaixo.</p>
 
-<h4>Patient</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title text-center text-primary mb-4">Informações do Paciente</h4>
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label fw-bold">Nome</label>
+                        <input asp-for="Name" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold">Telefone</label>
+                        <input asp-for="PhoneNumber" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label fw-bold">Email</label>
+                        <input asp-for="Email" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CreationDate" class="form-label fw-bold">Data de Criação</label>
+                        <input asp-for="CreationDate" class="form-control border-primary shadow-sm" readonly />
+                        <span asp-validation-for="CreationDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EditDate" class="form-label fw-bold">Data de Edição</label>
+                        <input asp-for="EditDate" class="form-control border-primary shadow-sm" readonly />
+                        <span asp-validation-for="EditDate" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                        <input type="submit" value="Salvar" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreationDate" class="control-label"></label>
-                <input asp-for="CreationDate" class="form-control" />
-                <span asp-validation-for="CreationDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EditDate" class="control-label"></label>
-                <input asp-for="EditDate" class="form-control" />
-                <span asp-validation-for="EditDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
