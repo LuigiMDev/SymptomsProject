@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SymptomsProject.Data;
 using SymptomsProject.Models;
+using SymptomsProject.Models.ViewModels;
 using SymptomsProject.Services;
 
 namespace SymptomsProject.Controllers
@@ -23,24 +25,36 @@ namespace SymptomsProject.Controllers
         // GET: Patients
         public async Task<IActionResult> Index()
         {
-            return View(await _service.FindAllAsync());
+            try
+            {
+                return View(await _service.FindAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new {message = ex.Message});
+            }
         }
 
         // GET: Patients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
+                }
+                Patient patient = await _service.FindByIdAsync(id.Value);
+                if (patient == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "Paciente não encontrado" });
+                }
+                return View(patient);
             }
-
-            var patient = await _service.FindByIdAsync(id.Value);
-            if (patient == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
-
-            return View(patient);
         }
 
         // GET: Patients/Create
@@ -56,28 +70,41 @@ namespace SymptomsProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Patient patient)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(patient);
+                if (!ModelState.IsValid)
+                {
+                    return View(patient);
+                }
+                await _service.Create(patient);
+                return RedirectToAction(nameof(Index));
             }
-            await _service.Create(patient);
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
         // GET: Patients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
+                }
+                Patient patient = await _service.FindByIdAsync(id.Value);
+                if (patient == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "Paciente não encontrado" });
+                }
+                return View(patient);
             }
-
-            var patient = await _service.FindByIdAsync(id.Value);
-            if (patient == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
-            return View(patient);
         }
 
         // POST: Patients/Edit/5
@@ -89,18 +116,17 @@ namespace SymptomsProject.Controllers
         {
             if (id != patient.Id)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     await _service.Edit(patient);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException db)
                 {
-                    throw;
+                    return RedirectToAction(nameof(Error), new { message = db.Message });
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -112,8 +138,25 @@ namespace SymptomsProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.Delete(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _service.Delete(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
+        }
+
+        public IActionResult Error(string message)
+        {
+            ErrorViewModel viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
