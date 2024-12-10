@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,45 +15,64 @@ namespace SymptomsProject.Controllers
 {
     public class SymptomsController : Controller
     {
-        private readonly SymptomsContext _context;
+        private readonly SymptomService _service;
         private readonly PatientService _patientService;
 
-        public SymptomsController(SymptomsContext context, PatientService patientService)
+        public SymptomsController(SymptomService service, PatientService patientService)
         {
-            _context = context;
+            _service = service;
             _patientService = patientService;
         }
 
         // GET: Symptoms
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Symptoms.ToListAsync());
+            try
+            {
+                return View(await _service.FindAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
         // GET: Symptoms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
+                }
 
-            var symptom = await _context.Symptoms
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (symptom == null)
+                Symptom symptom = await _service.FindByIdAsync(id.Value);
+                if (symptom == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
+                }
+                return View(symptom);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
-
-            return View(symptom);
         }
 
         // GET: Symptoms/Create
         public async Task<IActionResult> Create()
         {
-            List<Patient> patients = await _patientService.FindAllAsync();
-            SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients };
-            return View(viewModel);
+            try
+            {
+                List<Patient> patients = await _patientService.FindAllAsync();
+                SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients };
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
         // POST: Symptoms/Create
@@ -62,10 +82,16 @@ namespace SymptomsProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SymptomCreateViewModel viewModel)
         {
-            viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
-            _context.Symptoms.Add(viewModel.Symptom); 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
+                _service.Create(viewModel.Symptom); 
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
         // GET: Symptoms/Edit/5
@@ -73,13 +99,13 @@ namespace SymptomsProject.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
             }
 
-            var symptom = await _context.Symptoms.FindAsync(id);
+            Symptom symptom = await _service.FindByIdAsync(id.Value);
             if (symptom == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
             }
             return View(symptom);
         }
@@ -93,68 +119,48 @@ namespace SymptomsProject.Controllers
         {
             if (id != symptom.Id)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(symptom);
-                    await _context.SaveChangesAsync();
+                    await _service.Edit(symptom);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException db)
                 {
-                    if (!SymptomExists(symptom.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return RedirectToAction(nameof(Error), new { message = db.Message });
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(symptom);
         }
 
-        // GET: Symptoms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var symptom = await _context.Symptoms
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (symptom == null)
-            {
-                return NotFound();
-            }
-
-            return View(symptom);
-        }
 
         // POST: Symptoms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var symptom = await _context.Symptoms.FindAsync(id);
-            if (symptom != null)
+            try
             {
-                _context.Symptoms.Remove(symptom);
+                await _service.Delete(id);
+                return RedirectToAction(nameof(Index));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
-        private bool SymptomExists(int id)
+        public IActionResult Error(string message)
         {
-            return _context.Symptoms.Any(e => e.Id == id);
+            ErrorViewModel viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace SymptomsProject
             );
 
             builder.Services.AddScoped<PatientService>();
+            builder.Services.AddScoped<SymptomService>();
 
 
             var app = builder.Build();

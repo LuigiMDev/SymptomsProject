@@ -31,8 +31,8 @@ namespace SymptomsProject.Services
 
         public async Task Edit(Patient editPatient)
         {
-            _context.Update(editPatient);
-            await _context.SaveChangesAsync();
+                _context.Update(editPatient);
+                await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
