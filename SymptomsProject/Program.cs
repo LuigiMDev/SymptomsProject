@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using SymptomsProject.Data;
+using SymptomsProject.Services;
+
 namespace SymptomsProject
 {
     public class Program
@@ -8,6 +12,25 @@ namespace SymptomsProject
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<SymptomsContext>( options =>
+            {
+                options.UseMySql(
+                    builder
+                        .Configuration
+                        .GetConnectionString("SymptomsContext"),
+                    ServerVersion
+                    .AutoDetect(
+                            builder
+                            .Configuration
+                            .GetConnectionString("SymptomsContext")
+                        )
+                    );
+            }
+            );
+
+            builder.Services.AddScoped<PatientService>();
+
 
             var app = builder.Build();
 
