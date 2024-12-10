@@ -84,8 +84,10 @@ namespace SymptomsProject.Controllers
         {
             try
             {
+                viewModel.Symptom.EditDate = DateTime.Now;
+                viewModel.Symptom.CreationDate = DateTime.Now;
                 viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
-                _service.Create(viewModel.Symptom); 
+                await _service.Create(viewModel.Symptom); 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -126,6 +128,7 @@ namespace SymptomsProject.Controllers
                 try
                 {
                     await _service.Edit(symptom);
+                    symptom.EditDate = DateTime.Now;
                 }
                 catch (DbUpdateConcurrencyException db)
                 {

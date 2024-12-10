@@ -74,6 +74,8 @@ namespace SymptomsProject.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    patient.CreationDate = DateTime.Now;
+                    patient.EditDate = DateTime.Now;
                     return View(patient);
                 }
                 await _service.Create(patient);
@@ -122,6 +124,7 @@ namespace SymptomsProject.Controllers
             {
                 try
                 {
+                    patient.EditDate = DateTime.Now;
                     await _service.Edit(patient);
                 }
                 catch (DbUpdateConcurrencyException db)
