@@ -63,7 +63,6 @@ namespace SymptomsProject.Controllers
         public async Task<IActionResult> Create(SymptomCreateViewModel viewModel)
         {
             viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
-
             _context.Symptoms.Add(viewModel.Symptom); 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

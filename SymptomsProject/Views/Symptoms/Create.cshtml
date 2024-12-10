@@ -52,7 +52,7 @@
                     @foreach (SymptomType item in Enum.GetValues(typeof(SymptomType)))
                     {
                         <div>
-                            <input type="checkbox" name="Symptom.SymptomType" value="@item" />
+                            <input type="checkbox" name="Symptom.SymptomType[]" value="@item" />
                             @GetEnumDisplayName(item)
                         </div>
                     }
