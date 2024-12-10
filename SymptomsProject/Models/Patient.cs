@@ -15,6 +15,7 @@ namespace SymptomsProject.Models
         public DateTime CreationDate { get; set; }
         [Display(Name = "Data de Alteração")]
         public DateTime EditDate { get; set; }
-        //public ICollection<Symptom> Symptoms { get; set; } = new List<Symptom>();
+        [Display(Name = "Sintomas do paciente")]
+        public ICollection<Symptom> Symptoms { get; set; } = new List<Symptom>();
     }
 }

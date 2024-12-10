@@ -9,5 +9,6 @@ namespace SymptomsProject.Data
         {
         }
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Symptom> Symptoms { get; set; }
     }
 }
