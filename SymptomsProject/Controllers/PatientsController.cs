@@ -74,10 +74,10 @@ namespace SymptomsProject.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    patient.CreationDate = DateTime.Now;
-                    patient.EditDate = DateTime.Now;
                     return View(patient);
                 }
+                patient.CreationDate = DateTime.Now;
+                patient.EditDate = DateTime.Now;
                 await _service.Create(patient);
                 return RedirectToAction(nameof(Index));
             }
