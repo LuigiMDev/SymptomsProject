@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Symptom.SeverityType" class="control-label"></label>
-                <select name="Symptom.SeverityType" class="form-control">
+                <select asp-for="Symptom.SeverityType" class="form-control">
                     <option>Escolher...</option>
                     @foreach (SeverityType item in Enum.GetValues(typeof(SeverityType)))
                     {
