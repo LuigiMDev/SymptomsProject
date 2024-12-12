@@ -44,7 +44,7 @@ namespace SymptomsProject.Controllers
                 {
                     return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
                 }
-                Patient patient = await _service.FindByIdAsync(id.Value);
+                Patient patient = await _service.FindByIdAsyncDetails(id.Value);
                 if (patient == null)
                 {
                     return RedirectToAction(nameof(Error), new { message = "Paciente não encontrado" });

@@ -23,6 +23,11 @@ namespace SymptomsProject.Services
             return await _context.Patients.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Patient> FindByIdAsyncDetails(int id)
+        {
+            return await _context.Patients.Include(x => x.Symptoms).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task Create(Patient patient)
         {
             _context.Patients.Add(patient);
