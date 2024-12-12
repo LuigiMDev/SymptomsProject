@@ -1,0 +1,53 @@
+﻿@model SymptomsProject.Models.Patient
+
+@{
+    ViewData["Title"] = "Editar Paciente";
+}
+
+<h1 class="text-center my-4">@ViewData["Title"]</h1>
+<p class="text-center lead">Atualize as informações do paciente no formulário abaixo.</p>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title text-center text-primary mb-4">Informações do Paciente</h4>
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label fw-bold">Nome</label>
+                        <input asp-for="Name" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold">Telefone</label>
+                        <input asp-for="PhoneNumber" id="phone" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label fw-bold">Email</label>
+                        <input asp-for="Email" class="form-control border-primary shadow-sm" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-4 ">
+                        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                        <input type="submit" value="Salvar" class="btn btn-primary" />
+                    </div>
+                    <input type="hidden" asp-for="EditDate" />
+                    <input type="hidden" asp-for="CreationDate" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+<script>
+    $('#phone').mask('+55 (00) 00000-0000');
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

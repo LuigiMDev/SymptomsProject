@@ -1,8 +1,29 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Página Inicial";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex">
+    <div class="mx-5">
+        <h1 class=" mt-5 mb-3 fw-bold">
+            <span style="color: #19ddb8"> Gerencie com eficiência: visualize rapidamente a lista de pacientes e </span> acompanhe os sintomas de forma rápida em um só lugar!
+        </h1>
+        <p class=""
+            style="font-size: 1.2rem; color: #333;">
+            Registre facilmente os sintomas dos pacientes e acompanhe o histórico de forma intuitiva. Com essa funcionalidade, você pode manter um controle eficiente, garantindo que nenhum detalhe seja esquecido e que os pacientes recebam o acompanhamento adequado.
+        </p>
+        <div class="w-auto bg-black" style="height: 1px"></div>
+        <h1 class=" mt-5 mb-3 fw-bold text-center">
+            Nosso Sistema
+        </h1>
+        <div class="mt-5 d-flex justify-content-center gap-4">
+            <a asp-controller="Patients" asp-action="Index" class="d-flex btn btn-info btn-lg flex-column align-items-center fs-1 fw-bold text-decoration-none"><i class="bi bi-people-fill" style="font-size: 7rem;"></i>Pacientes</a>
+            <a asp-controller="Symptoms" asp-action="Index" class="d-flex btn btn-info btn-lg flex-column align-items-center fs-1 fw-bold text-decoration-none"><i class="bi bi-virus2" style="font-size: 7rem;"></i>Sintomas</a>
+        </div>
+    </div>
+    <div class="">
+    <img src="/image/portrait-smiling-male-doctor.jpg"
+         class="mt-5 rounded-5"
+         style="width: 800px; height: auto">
+    </div>
 </div>
+

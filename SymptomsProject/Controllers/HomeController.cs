@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SymptomsProject.Models;
+using SymptomsProject.Models.ViewModels;
 using System.Diagnostics;
 
 namespace SymptomsProject.Controllers
