@@ -120,6 +120,7 @@ namespace SymptomsProject.Controllers
                 SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients, Symptom = symptom, PatientSelectedId = symptom.Patient.Id };
                 return View(viewModel);
             }
+
             catch (Exception ex)
             {
                 return RedirectToAction(nameof(Error), new { message = ex.Message });
@@ -131,9 +132,9 @@ namespace SymptomsProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Symptom symptom)
+        public async Task<IActionResult> Edit(int id, SymptomCreateViewModel viewModel)
         {
-            if (id != symptom.Id)
+            if (id != viewModel.Symptom.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
             }
@@ -141,8 +142,8 @@ namespace SymptomsProject.Controllers
             {
                 try
                 {
-                    await _service.Edit(symptom);
-                    symptom.EditDate = DateTime.Now;
+                    viewModel.Symptom.EditDate = DateTime.Now;
+                    await _service.Edit(viewModel.Symptom);
                 }
                 catch (DbUpdateConcurrencyException db)
                 {
@@ -150,7 +151,8 @@ namespace SymptomsProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(symptom);
+            viewModel.Patients = await _patientService.FindAllAsync();
+            return View(viewModel);
         }
 
 
