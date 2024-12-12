@@ -13,16 +13,18 @@ using SymptomsProject.Services;
 
 namespace SymptomsProject.Controllers
 {
-    public class PatientsController : Controller
+    public class SymptomsController : Controller
     {
-        private readonly PatientService _service;
+        private readonly SymptomService _service;
+        private readonly PatientService _patientService;
 
-        public PatientsController(PatientService service)
+        public SymptomsController(SymptomService service, PatientService patientService)
         {
             _service = service;
+            _patientService = patientService;
         }
 
-        // GET: Patients
+        // GET: Symptoms
         public async Task<IActionResult> Index()
         {
             try
@@ -31,11 +33,11 @@ namespace SymptomsProject.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Error), new {message = ex.Message});
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
         }
 
-        // GET: Patients/Details/5
+        // GET: Symptoms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             try
@@ -44,12 +46,13 @@ namespace SymptomsProject.Controllers
                 {
                     return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
                 }
-                Patient patient = await _service.FindByIdAsyncDetails(id.Value);
-                if (patient == null)
+
+                Symptom symptom = await _service.FindByIdAsync(id.Value);
+                if (symptom == null)
                 {
-                    return RedirectToAction(nameof(Error), new { message = "Paciente não encontrado" });
+                    return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
                 }
-                return View(patient);
+                return View(symptom);
             }
             catch (Exception ex)
             {
@@ -57,28 +60,43 @@ namespace SymptomsProject.Controllers
             }
         }
 
-        // GET: Patients/Create
-        public IActionResult Create()
+        // GET: Symptoms/Create
+        public async Task<IActionResult> Create()
         {
-            return View();
+            try
+            {
+                List<Patient> patients = await _patientService.FindAllAsync();
+                SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients };
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
 
-        // POST: Patients/Create
+        // POST: Symptoms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Patient patient)
+        public async Task<IActionResult> Create(SymptomCreateViewModel viewModel)
         {
             try
             {
+                viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
+                if (viewModel.Symptom.Patient == null)
+                {
+                    ModelState.AddModelError(nameof(viewModel.PatientSelectedId), "Por favor, selecione um paciente válido.");
+                }
                 if (!ModelState.IsValid)
                 {
-                    return View(patient);
+                    viewModel.Patients = await _patientService.FindAllAsync();
+                    return View(viewModel);
                 }
-                patient.CreationDate = DateTime.Now;
-                patient.EditDate = DateTime.Now;
-                await _service.Create(patient);
+                viewModel.Symptom.EditDate = DateTime.Now;
+                viewModel.Symptom.CreationDate = DateTime.Now;
+                await _service.Create(viewModel.Symptom); 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -87,7 +105,7 @@ namespace SymptomsProject.Controllers
             }
         }
 
-        // GET: Patients/Edit/5
+        // GET: Symptoms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             try
@@ -96,36 +114,45 @@ namespace SymptomsProject.Controllers
                 {
                     return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
                 }
-                Patient patient = await _service.FindByIdAsync(id.Value);
-                if (patient == null)
+
+                Symptom symptom = await _service.FindByIdAsync(id.Value);
+                if (symptom == null)
                 {
-                    return RedirectToAction(nameof(Error), new { message = "Paciente não encontrado" });
+                    return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
                 }
-                return View(patient);
+                List<Patient> patients = await _patientService.FindAllAsync();
+                SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients, Symptom = symptom, PatientSelectedId = symptom.Patient.Id };
+                return View(viewModel);
             }
+
             catch (Exception ex)
             {
                 return RedirectToAction(nameof(Error), new { message = ex.Message });
-            }
+            }   
         }
 
-        // POST: Patients/Edit/5
+        // POST: Symptoms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Patient patient)
+        public async Task<IActionResult> Edit(int id, SymptomCreateViewModel viewModel)
         {
-            if (id != patient.Id)
+            if (id != viewModel.Symptom.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
+            }
+            viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
+            if (viewModel.Symptom.Patient == null)
+            {
+                ModelState.AddModelError(nameof(viewModel.PatientSelectedId), "Por favor, selecione um paciente válido.");
             }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    patient.EditDate = DateTime.Now;
-                    await _service.Edit(patient);
+                    viewModel.Symptom.EditDate = DateTime.Now;
+                    await _service.Edit(viewModel.Symptom);
                 }
                 catch (DbUpdateConcurrencyException db)
                 {
@@ -133,13 +160,15 @@ namespace SymptomsProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(patient);
+            viewModel.Patients = await _patientService.FindAllAsync();
+            return View(viewModel);
         }
 
-        // POST: Patients/Delete/5
-        [HttpPost]
+
+        // POST: Symptoms/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {

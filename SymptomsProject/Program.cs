@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using SymptomsProject.Data;
 using SymptomsProject.Services;
@@ -30,7 +31,8 @@ namespace SymptomsProject
             );
 
             builder.Services.AddScoped<PatientService>();
-
+            builder.Services.AddScoped<SymptomService>();
+            builder.Services.AddScoped<SeedingService>();
 
             var app = builder.Build();
 
@@ -40,6 +42,10 @@ namespace SymptomsProject
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+            else
+            {
+                app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingService>().Seed();
             }
 
             app.UseHttpsRedirection();

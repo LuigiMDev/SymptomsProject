@@ -23,6 +23,11 @@ namespace SymptomsProject.Services
             return await _context.Patients.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Patient> FindByIdAsyncDetails(int id)
+        {
+            return await _context.Patients.Include(x => x.Symptoms).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task Create(Patient patient)
         {
             _context.Patients.Add(patient);
@@ -31,8 +36,8 @@ namespace SymptomsProject.Services
 
         public async Task Edit(Patient editPatient)
         {
-            _context.Update(editPatient);
-            await _context.SaveChangesAsync();
+                _context.Update(editPatient);
+                await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)

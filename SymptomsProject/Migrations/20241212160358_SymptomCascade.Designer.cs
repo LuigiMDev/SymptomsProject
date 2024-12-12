@@ -12,8 +12,8 @@ using SymptomsProject.Data;
 namespace SymptomsProject.Migrations
 {
     [DbContext(typeof(SymptomsContext))]
-    [Migration("20241209234418_PatientAlteration")]
-    partial class PatientAlteration
+    [Migration("20241212160358_SymptomCascade")]
+    partial class SymptomCascade
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,56 @@ namespace SymptomsProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("SymptomsProject.Models.Symptom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("EditDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeverityType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SymptomTypes")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Symptoms");
+                });
+
+            modelBuilder.Entity("SymptomsProject.Models.Symptom", b =>
+                {
+                    b.HasOne("SymptomsProject.Models.Patient", "Patient")
+                        .WithMany("Symptoms")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("SymptomsProject.Models.Patient", b =>
+                {
+                    b.Navigation("Symptoms");
                 });
 #pragma warning restore 612, 618
         }

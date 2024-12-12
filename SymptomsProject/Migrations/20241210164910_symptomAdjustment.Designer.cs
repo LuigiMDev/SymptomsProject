@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SymptomsProject.Data;
 
@@ -11,9 +12,11 @@ using SymptomsProject.Data;
 namespace SymptomsProject.Migrations
 {
     [DbContext(typeof(SymptomsContext))]
-    partial class SymptomsContextModelSnapshot : ModelSnapshot
+    [Migration("20241210164910_symptomAdjustment")]
+    partial class symptomAdjustment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +74,7 @@ namespace SymptomsProject.Migrations
                     b.Property<DateTime>("EditDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("PatientId")
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<int>("SeverityType")
@@ -93,7 +96,8 @@ namespace SymptomsProject.Migrations
                     b.HasOne("SymptomsProject.Models.Patient", "Patient")
                         .WithMany("Symptoms")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Patient");
                 });
