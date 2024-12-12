@@ -84,13 +84,14 @@ namespace SymptomsProject.Controllers
         {
             try
             {
+                viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
                 if (!ModelState.IsValid)
                 {
+                    viewModel.Patients = await _patientService.FindAllAsync();
                     return View(viewModel);
                 }
                 viewModel.Symptom.EditDate = DateTime.Now;
                 viewModel.Symptom.CreationDate = DateTime.Now;
-                viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
                 await _service.Create(viewModel.Symptom); 
                 return RedirectToAction(nameof(Index));
             }
@@ -103,17 +104,26 @@ namespace SymptomsProject.Controllers
         // GET: Symptoms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            try
             {
-                return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
-            }
+                if (id == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "É necessário passar um ID" });
+                }
 
-            Symptom symptom = await _service.FindByIdAsync(id.Value);
-            if (symptom == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
+                Symptom symptom = await _service.FindByIdAsync(id.Value);
+                if (symptom == null)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "Registro não encontrado" });
+                }
+                List<Patient> patients = await _patientService.FindAllAsync();
+                SymptomCreateViewModel viewModel = new SymptomCreateViewModel { Patients = patients, Symptom = symptom, PatientSelectedId = symptom.Patient.Id };
+                return View(viewModel);
             }
-            return View(symptom);
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }   
         }
 
         // POST: Symptoms/Edit/5

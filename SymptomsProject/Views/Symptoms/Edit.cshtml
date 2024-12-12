@@ -1,4 +1,5 @@
-﻿@model SymptomsProject.Models.Symptom
+﻿@using SymptomsProject.Enums
+@model SymptomsProject.Models.ViewModels.SymptomCreateViewModel
 
 @{
     ViewData["Title"] = "Editar Sintomas";
@@ -12,29 +13,53 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <h4 class="card-title text-center text-primary mb-4">Informações do Paciente</h4>
-                  <form asp-action="Edit">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
-                        <input type="hidden" asp-for="Id" />
-                        <div class="form-group">
-                            <label asp-for="SeverityType" class="form-label fw-bold"></label>
-                            <select asp-for="SeverityType" class="form-control border-primary shadow-sm"></select>
-                            <span asp-validation-for="SeverityType" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="SymptomTypes" class="form-label fw-bold"></label>
-                            <input asp-for="SymptomTypes" class="form-control border-primary shadow-sm" />
-                            <span asp-validation-for="SymptomTypes" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Description" class="form-label fw-bold"></label>
-                            <input asp-for="Description" class="form-control border-primary shadow-sm" />
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    <div class="d-flex justify-content-between align-items-center mt-4 ">
-                        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
-                        <input type="submit" value="Salvar" class="btn btn-primary" />
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center"></div>
+                    <div>
+                        <label asp-for="Symptom.Patient" class="control-label font-weight-bold"></label>
+                        <select asp-for="PatientSelectedId" class="form-control">
+                            <option value="">Escolher...</option>
+                            @foreach (Patient item in Model.Patients)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PatientSelectedId" class="text-danger"></span>
                     </div>
-                  </form>
+                    <div class="form-group">
+                        <label asp-for="Symptom.SeverityType" class="control-label font-weight-bold"></label>
+                        <select asp-for="Symptom.SeverityType" class="form-control">
+                            <option value="">Escolher...</option>
+                            @foreach (SeverityType item in Enum.GetValues(typeof(SeverityType)))
+                            {
+                                <option value="@item">@Html.DisplayFor(model => item)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Symptom.SeverityType" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Symptom.SymptomTypes" class="control-label font-weight-bold"></label>
+                        <div class="overflow-auto" style="max-height: 200px;">
+                            @foreach (SymptomType item in Enum.GetValues(typeof(SymptomType)))
+                            {
+                                <div>
+                                    <input type="checkbox" name="Symptom.SymptomTypes" value="@item" />
+                                    @Html.DisplayFor(model => item)
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="Symptom.SymptomTypes" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Symptom.Description" class="control-label font-weight-bold"></label>
+                        <input asp-for="Symptom.Description" class="form-control" />
+                        <span asp-validation-for="Symptom.Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group text-center">
+                        <input type="submit" value="Criar" class="btn btn-primary px-4 mt-3" />
+                    </div>
+                </form>
             </div>
         </div>
     </div>

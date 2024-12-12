@@ -7,8 +7,7 @@ namespace SymptomsProject.Models
     {
         public int Id { get; set; }
         [Display(Name = "Paciente")]
-        [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        public Patient Patient { get; set; }
+        public Patient? Patient { get; set; }
         [Display(Name = "Severidade")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public SeverityType SeverityType { get; set; }

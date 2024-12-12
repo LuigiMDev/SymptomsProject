@@ -18,7 +18,6 @@ namespace SymptomsProject.Models
         [EmailAddress(ErrorMessage = "Digite um e-mail válido.")]
         public string Email { get; set; }
         [Display(Name = "Data de Criação")]
-        [Required(ErrorMessage = "O campo {0} é obrigatório.")]
         public DateTime CreationDate { get; set; }
         [Display(Name = "Data de Alteração")]
         public DateTime EditDate { get; set; }
