@@ -84,6 +84,10 @@ namespace SymptomsProject.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
                 viewModel.Symptom.EditDate = DateTime.Now;
                 viewModel.Symptom.CreationDate = DateTime.Now;
                 viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using SymptomsProject.Data;
 using SymptomsProject.Services;
@@ -31,7 +32,6 @@ namespace SymptomsProject
 
             builder.Services.AddScoped<PatientService>();
             builder.Services.AddScoped<SymptomService>();
-
 
             var app = builder.Build();
 

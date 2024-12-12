@@ -43,9 +43,8 @@
                 <div class="overflow-auto" style="max-height: 200px;">
                     @foreach (SymptomType item in Enum.GetValues(typeof(SymptomType)))
                     {
-                        int index = Array.IndexOf(Enum.GetValues(typeof(SymptomType)), item);
                         <div>
-                            <input type="checkbox" name="SymptomsTypesIds[]" value="@index" />
+                            <input type="checkbox" name="Symptom.SymptomTypes" value="@item" />
                             @Html.DisplayFor(model => item)
                         </div>
                     }

@@ -13,8 +13,8 @@ namespace SymptomsProject.Models
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public SeverityType SeverityType { get; set; }
         [Display(Name = "Sintomas")]
-		[Required(ErrorMessage = "Selecione pelo menos um sintoma.")]
-        public List<SymptomType> SymptomTypes { get; set;} = new List<SymptomType>();
+		[RequiredList]
+        public IList<SymptomType> SymptomTypes { get; set;} = new List<SymptomType>();
         [Display(Name = "Descrição")]
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
         public string Description { get; set; }
