@@ -85,6 +85,10 @@ namespace SymptomsProject.Controllers
             try
             {
                 viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
+                if (viewModel.Symptom.Patient == null)
+                {
+                    ModelState.AddModelError(nameof(viewModel.PatientSelectedId), "Por favor, selecione um paciente válido.");
+                }
                 if (!ModelState.IsValid)
                 {
                     viewModel.Patients = await _patientService.FindAllAsync();
@@ -137,6 +141,10 @@ namespace SymptomsProject.Controllers
             if (id != viewModel.Symptom.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
+            }
+            if (viewModel.Symptom.Patient == null)
+            {
+                ModelState.AddModelError(nameof(viewModel.PatientSelectedId), "Por favor, selecione um paciente válido.");
             }
             if (ModelState.IsValid)
             {
