@@ -10,5 +10,13 @@ namespace SymptomsProject.Data
         }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Symptom> Symptoms { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Symptom>()
+                        .HasOne(s => s.Patient)
+                        .WithMany(p => p.Symptoms)
+                        .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

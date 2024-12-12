@@ -53,7 +53,8 @@
                 </button>
             </div>
             <div class="modal-body">
-
+                <p class="dynamic-text"></p>
+                <p class="text-danger">Isso excluirá todos os seus registros de Sintomas!</p>
             </div>
             <div class="modal-footer">
                 <form method="post" asp-action="Delete">
@@ -74,7 +75,7 @@
         let name = button.data('name')
 
         var modal = $(this);
-        modal.find('.modal-body').text('Tem certeza que deseja deletar o paciente ' + name + '?');
+            modal.find('.dynamic-text').text('Tem certeza que deseja deletar o paciente ' + name + '?');
         $('#deleteId').val(id);
     });
 </script>
