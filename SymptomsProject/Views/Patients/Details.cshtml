@@ -71,11 +71,11 @@
                 @foreach (Symptom symptom in Model.Symptoms)
                 {
                     <tr>
-                        <td>@symptom.SeverityType</td>
+                        <td>@Html.DisplayFor(model => symptom.SeverityType)</td>
                         <td>
                             @foreach (SymptomType symptomtype in symptom.SymptomTypes)
                             {
-                                <span class="d-block">@Html.DisplayFor(model => symptomtype)</span>
+                                <span class="d-block">@Html.DisplayFor(modelItem => symptomtype)</span>
                             }
                         </td>
                         <td>@symptom.Description</td>

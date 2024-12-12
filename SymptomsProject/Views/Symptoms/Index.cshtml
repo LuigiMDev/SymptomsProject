@@ -34,7 +34,7 @@
                 <td>
                     @foreach(SymptomType symptomTypes in item.SymptomTypes)
                     {
-                        @Html.DisplayFor(modelItem => symptomTypes) <br/>
+                        <span class="d-block">@Html.DisplayFor(modelItem => symptomTypes)</span>
                     }
                 </td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
