@@ -46,43 +46,50 @@
                     @Html.DisplayFor(model => model.EditDate)
                 </dd>
             </dl>
-            <div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td>
-                                Severidade
-                            </td>
-                            <td>
-                                Sintomas
-                            </td>
-                            <td>
-                                Descrição
-                            </td>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(Symptom symptom in Model.Symptoms)
-                        {
-                            <tr>
-                                <td>@symptom.SeverityType</td>
-                                <td>@foreach (SymptomType symptomtype in symptom.SymptomTypes)
-                                    {
-                                        @Html.DisplayFor(model => symptomtype) <br />
-                                    }
-                                </td>
-                                <td>@symptom.Description</td>
-                                <td><a asp-controller="Symptoms" asp-action="Details" asp-route-id="@symptom.Id">Detalhes</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer text-center">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary btn-sm mx-2">Editar</a>
-            <a asp-action="Index" class="btn btn-secondary btn-sm mx-2">Voltar para a lista</a>
         </div>
     </div>
+    <h4 class="card-title text-center mb-3 mt-3">Sintomas do paciente</h4>
+    <div class="card shadow mx-auto my-2" style="max-width: 600px;">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <td class="font-weight-bold">
+                        Severidade
+                    </td>
+                    <td class="font-weight-bold">
+                        Sintomas
+                    </td>
+                    <td class="font-weight-bold">
+                        Descrição
+                    </td>
+                    <td class="font-weight-bold">
+                        Detalhes
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Symptom symptom in Model.Symptoms)
+                {
+                    <tr>
+                        <td>@symptom.SeverityType</td>
+                        <td>
+                            @foreach (SymptomType symptomtype in symptom.SymptomTypes)
+                            {
+                                <span class="d-block">@Html.DisplayFor(model => symptomtype)</span>
+                            }
+                        </td>
+                        <td>@symptom.Description</td>
+                        <td><a asp-controller="Symptoms" asp-action="Details" asp-route-id="@symptom.Id">Detalhes</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+        
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary mx-2">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary mx-2">Voltar para a lista</a>
+        </div>
 </div>
