@@ -142,6 +142,7 @@ namespace SymptomsProject.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Ocorreu um erro ao processar os IDs" });
             }
+            viewModel.Symptom.Patient = await _patientService.FindByIdAsync(viewModel.PatientSelectedId);
             if (viewModel.Symptom.Patient == null)
             {
                 ModelState.AddModelError(nameof(viewModel.PatientSelectedId), "Por favor, selecione um paciente válido.");
