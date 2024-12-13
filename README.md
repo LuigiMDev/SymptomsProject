@@ -50,7 +50,7 @@ Este é um projeto MVC desenvolvido em ASP.NET Core para gerenciar informações
 
    ```json
    "ConnectionStrings": {
-       "DefaultConnection": "<sua-string-de-conexão>"
+       "SymptomContext": "<sua-string-de-conexão>"
    }
    ```
 
